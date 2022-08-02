@@ -1,6 +1,6 @@
 function [perm_p_pos, perm_p_neg, perm_p_combined] = ...
-    CPM_permutation_test(all_behav, all_mats, all_covars, k, thresh, ...
-    adjust_stage, true_r_pos, true_r_neg, true_r_combined, n_iterations)
+    CPM_permutation_test(all_behav, all_mats, all_covars, k, thresh_type, thresh, ...
+    adjust_stage, true_r_pos, true_r_neg, true_r_combined, n_iterations, cat_covars)
 % Permutation testing of CPM to create an empirical null distribution of 
 % test statistic (i.e. correlation between target variable and predicted 
 % values). The target variable is randomly shuffled and then CPM is 
@@ -65,7 +65,7 @@ random_combined_r = zeros(n_iterations,1);
 
 %% 2) Run random permutation of CPM and store correlations
 % Permute CPM
-    for i = 1:n_iterations
+    parfor i = 1:n_iterations
         % display progress message
         fprintf('\n Iteration %d out of %d',...
             i, n_iterations)
@@ -76,13 +76,13 @@ random_combined_r = zeros(n_iterations,1);
         % Run CPM with randomly shuffled target variable
         [behav_pred_pos, behav_pred_neg, behav_pred_combined,...
             ~, ~, ~, ~, ~, ~, ~] = run_flexible_CPM(...
-            random_behav, all_mats, all_covars, k, thresh, adjust_stage);
+            random_behav, all_mats, all_covars, k, thresh_type, thresh, adjust_stage, cat_covars);
         
         % Correlate predictions with randomly shuffled target variables and
         % store correlations        
-        random_pos_r(i) = corr(behav_pred_pos, random_behav);
-        random_neg_r(i) = corr(behav_pred_neg, random_behav);
-        random_combined_r(i) = corr(behav_pred_combined, random_behav);
+        random_pos_r(i) = corr(behav_pred_pos, random_behav, 'type', 'Pearson');
+        random_neg_r(i) = corr(behav_pred_neg, random_behav, 'type', 'Pearson');
+        random_combined_r(i) = corr(behav_pred_combined, random_behav, 'type', 'Pearson');
         
         % display progress message   
         fprintf('\n%.2f%% complete\n', (i/n_iterations)*100)
@@ -91,16 +91,21 @@ random_combined_r = zeros(n_iterations,1);
 %% 3) Calculate permuted p-values
 % Permuted p-value = proportion of permuted correlations that are greater
 % than or equal to the true prediction correlation.
-
+    disp("sum(random>=true)")    
+    sum(random_pos_r>=true_r_pos)
+    sum(random_neg_r>=random_neg_r)
+    sum(random_combined_r>=true_r_combined)
+    
     % Calculate permuted p-value for positive network strength model
-    perm_p_pos = (sum(random_pos_r>=true_r_pos))/n_iterations
+    perm_p_pos = (sum(random_pos_r>=true_r_pos))/n_iterations;
     
     % Calculate permuted p-value for negative network strength model 
-    perm_p_neg = (sum(random_neg_r>=true_r_neg))/n_iterations
+    perm_p_neg = (sum(random_neg_r>=true_r_neg))/n_iterations;
     
     % Calculate permuted p-value for combined network strength model 
     % Use abs() to get absolute values in case of negative correlations
-    perm_p_combined = (sum(random_combined_r>=true_r_combined))/n_iterations  
+    sum(random_combined_r>=true_r_combined);
+    perm_p_combined = (sum(random_combined_r>=true_r_combined))/n_iterations;
     
 end
 
