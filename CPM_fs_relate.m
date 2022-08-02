@@ -34,7 +34,14 @@ function [r_mat, p_mat] = CPM_fs_relate(train_vcts, train_behav, no_node)
 % connectivity. Nature Neuroscience 18, 1664-1671.
 % 
 % Relate functional connectivity to behaviour
-[r_mat,p_mat] = corr(train_vcts',train_behav);
+
+% Modified by: James Davis
+% Contact: davisj5@tcd.ie
+% Date: 17/01/‎2022
+% -- Changed correlation type to Spearman: this allows for
+% non-linear relationships between edges and outcome to be detected. 
+
+[r_mat,p_mat] = corr(train_vcts',train_behav, 'type', 'Spearman');
 
 % Reshape from vectors to matrices
 r_mat = reshape(r_mat,no_node,no_node);
