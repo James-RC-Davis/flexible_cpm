@@ -13,19 +13,19 @@ function [R_pos, P_pos, R_neg, P_neg, R_combined, P_combined,...
 % values equivalent to p-value from Pearson's correlation
 %
 %% 1)Pearson's correlations
-[R_pos, P_pos] = corr(behav_pred_pos,all_behav);
-[R_neg, P_neg] = corr(behav_pred_neg,all_behav);
-[R_combined, P_combined] = corr(behav_pred_combined,all_behav);
+[R_pos, P_pos] = corr(behav_pred_pos,all_behav, 'type', 'Pearson');
+[R_neg, P_neg] = corr(behav_pred_neg,all_behav, 'type', 'Pearson');
+[R_combined, P_combined] = corr(behav_pred_combined,all_behav, 'type', 'Pearson');
 
 %% 2) R^2 coefficient of determination
 % recommended by Poldrack et al 2020 JAMA Psychiatry
 pos_mdl = fitlm(behav_pred_pos, all_behav);
 rsq_pos = pos_mdl.Rsquared.Ordinary;
 
-neg_mdl = fitlm(behav_pred_neg,all_behav);
+neg_mdl = fitlm(behav_pred_neg, all_behav);
 rsq_neg = neg_mdl.Rsquared.Ordinary;
 
-combined_mdl = fitlm(behav_pred_combined,all_behav);
+combined_mdl = fitlm(behav_pred_combined, all_behav);
 rsq_combined = combined_mdl.Rsquared.Ordinary;
 
 %% 3) Mean Absolute Error (MAE)

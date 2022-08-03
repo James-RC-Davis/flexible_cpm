@@ -1,6 +1,6 @@
 function [fit_pos, fit_neg, fit_combined] = ...
         CPM_fit_model(train_behav, train_covars, no_covars, ...
-        train_sumpos, train_sumneg, train_sumcombined)
+        train_sumpos, train_sumneg, train_sumcombined, adjust_stage, cat_covars)
 % Fits linear regression model where network strength values (and
 % covariates if specified) are related to the target variable.
 %
@@ -40,23 +40,43 @@ function [fit_pos, fit_neg, fit_combined] = ...
 % fingerprinting: Identifying individuals using patterns of brain
 % connectivity. Nature Neuroscience 18, 1664-1671.
 % 
+% Modified by: James Davis
+% Contact: davisj5@tcd.ie
+% Date: 17/01/‎2022
+% -- Added possibility of properly controlling for categorical variables
+
 % Create independent variables for each network strength model - add column
 % of ones to network strength values
 x_pos = [ones(size(train_behav)) train_sumpos];
 x_neg = [ones(size(train_behav)) train_sumneg];
 x_combined = [ones(size(train_behav)) train_sumcombined];
 
-% Add covariates to independent variables for each network strength model
-if no_covars>0
-    for covar = 1:no_covars
-        x_pos(:,covar+2) = train_covars(:,covar);
-        x_neg(:,covar+2) = train_covars(:,covar);
-        x_combined(:,covar+2) = train_covars(:,covar);
+if strcmp(adjust_stage, 'relate')
+    % Fit each network strength model
+    fit_pos = regress(train_behav, x_pos);
+    fit_neg = regress(train_behav, x_neg);
+    fit_combined = regress(train_behav, x_combined);
+else
+    % Add covariates to independent variables for each network strength model
+    if no_covars>0
+        if isempty(cat_covars)
+            for covar = 1:no_covars
+                x_pos(:,covar+1) = train_covars(:,covar);
+                x_neg(:,covar+1) = train_covars(:,covar);
+                x_combined(:,covar+1) = train_covars(:,covar);
+            end
+            % Fit each network strength model
+            fit_pos = regress(train_behav, x_pos);
+            fit_neg = regress(train_behav, x_neg);
+            fit_combined = regress(train_behav, x_combined);
+        else
+            % If user has specified categorical variables then fit model
+            % using 'fitlm'.  Set intercept to false in fitlm so that it
+            % instead uses the column of ones added above. 
+            fit_pos = fitlm(x_pos, train_behav, 'CategoricalVars', cat_covars, 'Intercept', false).Coefficients.Estimate;
+            fit_neg = fitlm(x_neg, train_behav, 'CategoricalVars', cat_covars, 'Intercept', false).Coefficients.Estimate;
+            fit_combined = fitlm(x_combined, train_behav, 'CategoricalVars', cat_covars, 'Intercept', false).Coefficients.Estimate;
+        end
     end
 end
-
-% Fit each network strength model
-fit_pos = regress(train_behav, x_pos);
-fit_neg = regress(train_behav, x_neg);
-fit_combined = regress(train_behav, x_combined);
 end

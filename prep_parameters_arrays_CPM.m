@@ -2,7 +2,7 @@ function [pos_mask_all_iterations, neg_mask_all_iterations,...
     int_pos_ntwrk_all, int_neg_ntwrk_all, int_combined_ntwrk_all,...
     slope_pos_ntwrk_all, slope_neg_ntwrk_all, slope_combined_ntwrk_all, ...
     slope_pos_covars_all, slope_neg_covars_all, slope_combined_covars_all]...
-    = prep_parameters_arrays_CPM(all_mats, all_covars, k, iterations)
+    = prep_parameters_arrays_CPM(all_mats, all_covars, k, iterations, adjust_stage)
 % Prepares arrays for storing parameters obtained from multiple iterations 
 % of CPM with k-fold cross-validation
 %
@@ -58,8 +58,16 @@ int_combined_ntwrk_all = zeros(iterations,1);
 slope_pos_ntwrk_all = zeros(iterations,1);
 slope_neg_ntwrk_all = zeros(iterations,1);
 slope_combined_ntwrk_all = zeros(iterations,1);
-slope_pos_covars_all = zeros(iterations,n_covars);
-slope_neg_covars_all = zeros(iterations,n_covars);
-slope_combined_covars_all = zeros(iterations,n_covars);
+
+if strcmp(adjust_stage,'relate')
+    slope_pos_covars_all = [];
+    slope_neg_covars_all = [];
+    slope_combined_covars_all = [];
+   
+else
+    slope_pos_covars_all = zeros(iterations,n_covars);
+    slope_neg_covars_all = zeros(iterations,n_covars);
+    slope_combined_covars_all = zeros(iterations,n_covars);
+end
 
 end
