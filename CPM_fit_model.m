@@ -1,6 +1,6 @@
 function [fit_pos, fit_neg, fit_combined] = ...
         CPM_fit_model(train_behav, train_covars, no_covars, ...
-        train_sumpos, train_sumneg, train_sumcombined, adjust_stage, cat_covars)
+        train_sumpos, train_sumneg, train_sumcombined, train_sumpos_macronets, train_sumneg_macronets, train_sumcombined_macronets, adjust_stage, cat_covars)
 % Fits linear regression model where network strength values (and
 % covariates if specified) are related to the target variable.
 %
@@ -47,9 +47,9 @@ function [fit_pos, fit_neg, fit_combined] = ...
 
 % Create independent variables for each network strength model - add column
 % of ones to network strength values
-x_pos = [ones(size(train_behav)) train_sumpos];
-x_neg = [ones(size(train_behav)) train_sumneg];
-x_combined = [ones(size(train_behav)) train_sumcombined];
+x_pos = [ones(size(train_behav)) train_sumpos_macronets];
+x_neg = [ones(size(train_behav)) train_sumneg_macronets];
+x_combined = [ones(size(train_behav)) train_sumcombined_macronets];
 
 if strcmp(adjust_stage, 'relate')
     % Fit each network strength model

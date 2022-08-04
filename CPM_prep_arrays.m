@@ -56,18 +56,18 @@ behav_pred_neg = zeros(no_sub,1);
 behav_pred_combined = zeros(no_sub, 1);
 
 % preallocate arrays to store paramaters of regression models in each fold
-% col 1 = intercept, col 2 = network strength slope.
+% col 1 = intercept, col 2-9 = macro network strength slopes.
 % if covars are included, and are adjusted for at the model fitting step
 % (step 6), then col 3 = covar 1 intercept, col 4 = covar 1 intercept, 
 % and so on...
 if strcmp(adjust_stage, 'fit') | strcmp(adjust_stage, 'both')
-    parameters_pos = zeros(k, 2 + no_covars);
-    parameters_neg = zeros(k, 2 + no_covars);
+    parameters_pos = zeros(k, 1 + 8 + no_covars);
+    parameters_neg = zeros(k, 1 + 8 + no_covars);
     parameters_combined = zeros(k, 2 + no_covars);
 else
-    parameters_pos = zeros(k, 2);
-    parameters_neg = zeros(k, 2);
-    parameters_combined = zeros(k, 2);
+    parameters_pos = zeros(k, 1 + 8);
+    parameters_neg = zeros(k, 1 + 8);
+    parameters_combined = zeros(k, 1 + 8);
 end
 
 % preallocate arrays to store selected edges in each fold
