@@ -53,16 +53,21 @@ macro_network_nodes_8 = [41	43	59	66	67	69	71	73	74	175	177	200	201	204	206	209	
 
 macro_network_nodes = {macro_network_nodes_1; macro_network_nodes_2; macro_network_nodes_3; macro_network_nodes_4; macro_network_nodes_5; macro_network_nodes_6; macro_network_nodes_7; macro_network_nodes_8};
 
-% Create arrays to store macro network strength values
-test_sumpos_macronets = zeros(length(ix_test),8);
-test_sumneg_macronets = zeros(length(ix_test),8);
-test_sumcombined_macronets = zeros(length(ix_test),8);
+n_test = size(test_mats, 3);
+total_n_nodes = size(test_mats, 1);
 
-for net = 1:size(train_sumpos, 2)
+% Create arrays to store macro network strength values
+test_sumpos_macronets = zeros(n_test,8);
+test_sumneg_macronets = zeros(n_test,8);
+test_sumcombined_macronets = zeros(n_test,8);
+
+for net = 1:8
     nodes = macro_network_nodes{net};
-    for ss = 1:size(train_sumpos, 1)
-        test_sumpos_macronets(ss, net) = sum(sum(test_mats(nodes,:,ss).*pos_mask));
-        test_sumneg_macronets(ss, net) = sum(sum(test_mats(nodes,:,ss).*neg_mask));
+    temp_macronet_mask = zeros(total_n_nodes,total_n_nodes);
+    temp_macronet_mask(nodes, :) = 1 ;
+    for ss = 1:n_test
+        test_sumpos_macronets(ss, net) = sum(sum(test_mats(:,:,ss).*pos_mask.*temp_macronet_mask));
+        test_sumneg_macronets(ss, net) = sum(sum(test_mats(:,:,ss).*neg_mask.*temp_macronet_mask));
         test_sumcombined_macronets(ss, net) = test_sumpos_macronets(ss, net) - test_sumneg_macronets(ss, net);
     end
 end

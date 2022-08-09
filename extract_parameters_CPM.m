@@ -41,15 +41,15 @@ int_neg_ntwrk = mean(parameters_neg(:,1));
 int_combined_ntwrk = mean(parameters_combined(:,1));
 
 % Get average slopes for network strength in each model across folds
-slope_pos_ntwrk = mean(parameters_pos(:,2));
-slope_neg_ntwrk = mean(parameters_neg(:,2));
-slope_combined_ntwrk = mean(parameters_combined(:,2));
+slope_pos_ntwrk = mean(parameters_pos(:,2:9));
+slope_neg_ntwrk = mean(parameters_neg(:,2:9));
+slope_combined_ntwrk = mean(parameters_combined(:,2:9));
 
 % Get average slopes for covariates in each model across folds
 if no_covars > 0 && strcmp(adjust_stage, 'fit')
-    slope_pos_covars =  mean(parameters_pos(:,3:end));
-    slope_neg_covars = mean(parameters_neg(:,3:end));
-    slope_combined_covars = mean(parameters_combined(:,3:end));
+    slope_pos_covars =  mean(parameters_pos(:,10:end));
+    slope_neg_covars = mean(parameters_neg(:,10:end));
+    slope_combined_covars = mean(parameters_combined(:,10:end));
     
 % this block necessary for general analysis script to run correctly as
 % covar parameters will require some value (e.g. NaN)
