@@ -65,6 +65,9 @@ end
 % Calculate combined network strength
 train_sumcombined = train_sumpos - train_sumneg;
 
+%adjust code to extract within-network and between-network strengths for
+%each macro network 
+
 macro_network_nodes_1 = [10	12	16	52	53	54	56	57	64	65	137	140	145	148	149	150	151	153	156	162	165	183	185	186	187	190	192	194	219];
 macro_network_nodes_2 = [1	4	7	8	9	14	17	19	21	22	30	31	47	48	55	70	111	112	116	139	142	143	147	154	157	164	182	184	193	196	199	242	246	247];
 macro_network_nodes_3 = [3	5	6	13	49	50	85	86	90	96	115	134	138	141	203	222	223	225	227	239];
