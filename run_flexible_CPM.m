@@ -2,7 +2,7 @@ function [behav_pred_pos, behav_pred_neg, behav_pred_combined,...
     parameters_pos, parameters_neg, parameters_combined,...
     pos_mask_all, neg_mask_all, no_node, no_covars] = ...
     run_flexible_CPM(all_behav, all_mats, all_covars, k, thresh_type,...
-    thresh, adjust_stage, cat_covars)
+    thresh, adjust_stage, cat_covars, corr_type)
 % Runs connectome-based predictive modelling with cross-validation. Enables
 % choice of different k-fold cross-validation schemes (can specify LOOCV by
 % calling k = number of participants) and allows for covariates to be
@@ -108,9 +108,9 @@ for fold = 1:k
     % correlation
     if strcmp(adjust_stage, 'relate') | strcmp(adjust_stage, 'both')
         [r_mat, p_mat] = CPM_fs_relate_partial(train_vcts, train_behav, ...
-            train_covars, no_node);
+            train_covars, no_node, corr_type);
     else
-        [r_mat, p_mat] = CPM_fs_relate(train_vcts, train_behav, no_node);
+        [r_mat, p_mat] = CPM_fs_relate(train_vcts, train_behav, no_node, corr_type);
     end
 
     % feature selection - select edges (Step 4 - Shen et al. 2017)
@@ -125,7 +125,7 @@ for fold = 1:k
     
     % calculate network strength in training set (Step 5 - Shen et al.
     % 2017)
-    [train_sumpos, train_sumneg, train_sumcombined, train_sumpos_macronets, train_sumneg_macronets, train_sumcombined_macronets] = ...
+    [train_sumpos, train_sumneg, train_sumcombined] = ...
         CPM_network_strength(train_mats, pos_mask, neg_mask, ix_train);
     
     % fit model on training set (Step 6 - Shen et al. 2017)
@@ -134,11 +134,11 @@ for fold = 1:k
     if strcmp(adjust_stage, 'fit') | strcmp(adjust_stage, 'both')
         [fit_pos, fit_neg, fit_combined] = ...
         CPM_fit_model(train_behav, train_covars, no_covars, ...
-        train_sumpos, train_sumneg, train_sumcombined, train_sumpos_macronets, train_sumneg_macronets, train_sumcombined_macronets, adjust_stage, cat_covars);
+        train_sumpos, train_sumneg, train_sumcombined, adjust_stage, cat_covars);
     else
         [fit_pos, fit_neg, fit_combined] = ...
         CPM_fit_model(train_behav, [], 0, ...
-        train_sumpos, train_sumneg, train_sumcombined, train_sumpos_macronets, train_sumneg_macronets, train_sumcombined_macronets, adjust_stage, cat_covars);
+        train_sumpos, train_sumneg, train_sumcombined, adjust_stage, cat_covars);
     end
     
     % apply model to test set (Step 7 - Shen et al., 2017)

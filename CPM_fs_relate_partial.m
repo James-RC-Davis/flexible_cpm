@@ -1,5 +1,5 @@
 function [r_mat, p_mat] = CPM_fs_relate_partial(train_vcts, train_behav, ...
-                                        train_covars, no_node)
+                                        train_covars, no_node, corr_type)
 % Relates functional connectivity in each edge in connectivity matrix to 
 % target variable, controlling for covariates, for CPM feature selection.
 %
@@ -44,7 +44,7 @@ function [r_mat, p_mat] = CPM_fs_relate_partial(train_vcts, train_behav, ...
 % non-linear relationships between edges and outcome to be detected.  
 
 
-[r_mat,p_mat] = partialcorr(train_vcts',train_behav,train_covars, 'type', 'Spearman');
+[r_mat,p_mat] = partialcorr(train_vcts',train_behav,train_covars, 'type', corr_type);
 
 % Reshape from vectors to matrices
 r_mat = reshape(r_mat,no_node,no_node);

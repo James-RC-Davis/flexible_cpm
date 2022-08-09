@@ -1,4 +1,4 @@
-function [r_mat, p_mat] = CPM_fs_relate(train_vcts, train_behav, no_node)
+function [r_mat, p_mat] = CPM_fs_relate(train_vcts, train_behav, no_node, corr_type)
 % Relates functional connectivity in each edge in connectivity matrix to 
 % target variable for CPM feature selection.
 %
@@ -41,7 +41,7 @@ function [r_mat, p_mat] = CPM_fs_relate(train_vcts, train_behav, no_node)
 % -- Changed correlation type to Spearman: this allows for
 % non-linear relationships between edges and outcome to be detected. 
 
-[r_mat,p_mat] = corr(train_vcts',train_behav, 'type', 'Spearman');
+[r_mat,p_mat] = corr(train_vcts',train_behav, 'type', corr_type);
 
 % Reshape from vectors to matrices
 r_mat = reshape(r_mat,no_node,no_node);
