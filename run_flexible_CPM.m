@@ -125,7 +125,7 @@ for fold = 1:k
     
     % calculate network strength in training set (Step 5 - Shen et al.
     % 2017)
-    [train_sumpos, train_sumneg, train_sumcombined] = ...
+    [train_sumpos, train_sumneg, train_sumcombined, train_sumpos_macronets, train_sumneg_macronets, train_sumcombined_macronets] = ...
         CPM_network_strength(train_mats, pos_mask, neg_mask, ix_train);
     
     % fit model on training set (Step 6 - Shen et al. 2017)
@@ -134,11 +134,11 @@ for fold = 1:k
     if strcmp(adjust_stage, 'fit') | strcmp(adjust_stage, 'both')
         [fit_pos, fit_neg, fit_combined] = ...
         CPM_fit_model(train_behav, train_covars, no_covars, ...
-        train_sumpos, train_sumneg, train_sumcombined, adjust_stage, cat_covars);
+        train_sumpos, train_sumneg, train_sumcombined,train_sumpos_macronets, train_sumneg_macronets, train_sumcombined_macronets, adjust_stage, cat_covars);
     else
         [fit_pos, fit_neg, fit_combined] = ...
         CPM_fit_model(train_behav, [], 0, ...
-        train_sumpos, train_sumneg, train_sumcombined, adjust_stage, cat_covars);
+        train_sumpos, train_sumneg, train_sumcombined,train_sumpos_macronets, train_sumneg_macronets, train_sumcombined_macronets, adjust_stage, cat_covars);
     end
     
     % apply model to test set (Step 7 - Shen et al., 2017)

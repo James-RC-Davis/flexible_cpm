@@ -87,8 +87,10 @@ train_sumcombined_macronets = zeros(length(ix_train),8);
 for net = 1:size(train_sumpos, 2)
     nodes = macro_network_nodes{net};
     for ss = 1:size(train_sumpos, 1)
-        train_sumpos_macronets(ss, net) = sum(sum(train_mats(nodes,:,ss).*pos_mask));
-        train_sumneg_macronets(ss, net) = sum(sum(train_mats(nodes,:,ss).*neg_mask));
+        train_mats_temp = train_mats.*pos_mask;
+        train_sumpos_macronets(ss, net) = sum(sum(train_mats_temp(nodes,:,ss)));
+        train_mats_temp = train_mats.*neg_mask;
+        train_sumneg_macronets(ss, net) = sum(sum(train_mats_temp(nodes,:,ss)));
         train_sumcombined_macronets(ss, net) = train_sumpos_macronets(ss, net) - train_sumneg_macronets(ss, net);
     end
 end
