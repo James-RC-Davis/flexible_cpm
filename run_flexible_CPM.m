@@ -162,7 +162,7 @@ for fold = 1:k
     parameters_pos(fold, :) = fit_pos';
     parameters_neg(fold, :) = fit_neg';
     parameters_combined(fold, :) = fit_combined'; 
-       
+
     % store edges selected in current fold
     pos_mask_all(:, :, fold) = pos_mask;
     neg_mask_all(:, :, fold) = neg_mask;

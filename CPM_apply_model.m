@@ -41,6 +41,7 @@ function [pred_pos, pred_neg, pred_combined] = ...
 % connectivity. Nature Neuroscience 18, 1664-1671.
 %
 
+
 macro_network_nodes_1 = [10	12	16	52	53	54	56	57	64	65	137	140	145	148	149	150	151	153	156	162	165	183	185	186	187	190	192	194	219];
 macro_network_nodes_2 = [1	4	7	8	9	14	17	19	21	22	30	31	47	48	55	70	111	112	116	139	142	143	147	154	157	164	182	184	193	196	199	242	246	247];
 macro_network_nodes_3 = [3	5	6	13	49	50	85	86	90	96	115	134	138	141	203	222	223	225	227	239];
@@ -52,24 +53,26 @@ macro_network_nodes_8 = [41	43	59	66	67	69	71	73	74	175	177	200	201	204	206	209	
 
 macro_network_nodes = {macro_network_nodes_1; macro_network_nodes_2; macro_network_nodes_3; macro_network_nodes_4; macro_network_nodes_5; macro_network_nodes_6; macro_network_nodes_7; macro_network_nodes_8};
 
-% Create arrays to store macro network strength values
-test_ppts = size(test_mats, 3);
-test_sumpos_macronets = zeros(test_ppts,8);
-test_sumneg_macronets = zeros(test_ppts,8);
-test_sumcombined_macronets = zeros(test_ppts,8);
+n_test = size(test_mats, 3);
+total_n_nodes = size(test_mats, 1);
 
-for net = 1:size(test_sumpos_macronets, 2)
+% Create arrays to store macro network strength values
+test_sumpos_macronets = zeros(n_test,8);
+test_sumneg_macronets = zeros(n_test,8);
+test_sumcombined_macronets = zeros(n_test,8);
+
+for net = 1:8
     nodes = macro_network_nodes{net};
-    for ss = 1:size(test_sumpos_macronets, 1)
-        test_mats_temp = test_mats.*pos_mask;
-        test_sumpos_macronets(ss, net) = sum(sum(test_mats_temp(nodes,:,ss)));
-        test_mats_temp = test_mats.*neg_mask;
-        test_sumneg_macronets(ss, net) = sum(sum(test_mats_temp(nodes,:,ss)));
+    temp_macronet_mask = zeros(total_n_nodes,total_n_nodes);
+    temp_macronet_mask(nodes, :) = 1 ;
+    for ss = 1:n_test
+        test_sumpos_macronets(ss, net) = sum(sum(test_mats(:,:,ss).*pos_mask.*temp_macronet_mask));
+        test_sumneg_macronets(ss, net) = sum(sum(test_mats(:,:,ss).*neg_mask.*temp_macronet_mask));
         test_sumcombined_macronets(ss, net) = test_sumpos_macronets(ss, net) - test_sumneg_macronets(ss, net);
     end
 end
 
-% Calculate network strengths for participants in the testing set
+% Calculate network strengths for participants in the training set
 test_sumpos = sum(sum(test_mats.*pos_mask))/2;
 test_sumneg = sum(sum(test_mats.*neg_mask))/2;
 test_sumcombined = test_sumpos - test_sumneg;
@@ -88,6 +91,7 @@ end
 % Reshape prediction arrays - when k-fold (e.g. 5-fold or 10-fold)
 % cross-validation used, prediction arrays are saved as 1*1*n arrays where
 % n = number of test participants. This will convert them to n * 1 arrays.
+test_ppts = size(test_mats, 3);
 pred_pos = reshape(pred_pos, test_ppts, 1);
 pred_neg = reshape(pred_neg, test_ppts, 1);
 pred_combined = reshape(pred_combined, test_ppts, 1);

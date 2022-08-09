@@ -1,6 +1,6 @@
 function [perm_p_pos, perm_p_neg, perm_p_combined] = ...
     CPM_permutation_test(all_behav, all_mats, all_covars, k, thresh_type, thresh, ...
-    adjust_stage, true_r_pos, true_r_neg, true_r_combined, n_iterations, cat_covars)
+    adjust_stage, true_r_pos, true_r_neg, true_r_combined, n_iterations, cat_covars, corr_type)
 % Permutation testing of CPM to create an empirical null distribution of 
 % test statistic (i.e. correlation between target variable and predicted 
 % values). The target variable is randomly shuffled and then CPM is 
@@ -76,7 +76,7 @@ random_combined_r = zeros(n_iterations,1);
         % Run CPM with randomly shuffled target variable
         [behav_pred_pos, behav_pred_neg, behav_pred_combined,...
             ~, ~, ~, ~, ~, ~, ~] = run_flexible_CPM(...
-            random_behav, all_mats, all_covars, k, thresh_type, thresh, adjust_stage, cat_covars);
+            random_behav, all_mats, all_covars, k, thresh_type, thresh, adjust_stage, cat_covars, corr_type);
         
         % Correlate predictions with randomly shuffled target variables and
         % store correlations        

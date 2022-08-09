@@ -55,15 +55,14 @@ neg_mask_all_iterations = zeros(n_nodes, n_nodes, (k*iterations));
 int_pos_ntwrk_all = zeros(iterations,1);
 int_neg_ntwrk_all = zeros(iterations,1);
 int_combined_ntwrk_all = zeros(iterations,1);
-slope_pos_ntwrk_all = zeros(iterations,1);
-slope_neg_ntwrk_all = zeros(iterations,1);
-slope_combined_ntwrk_all = zeros(iterations,1);
+slope_pos_ntwrk_all = zeros(iterations,8);
+slope_neg_ntwrk_all = zeros(iterations,8);
+slope_combined_ntwrk_all = zeros(iterations,8);
 
 if strcmp(adjust_stage,'relate')
     slope_pos_covars_all = [];
     slope_neg_covars_all = [];
     slope_combined_covars_all = [];
-   
 else
     slope_pos_covars_all = zeros(iterations,n_covars);
     slope_neg_covars_all = zeros(iterations,n_covars);
